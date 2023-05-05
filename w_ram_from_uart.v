@@ -10,8 +10,9 @@ module w_ram_from_uart
 	output reg w_ram_from_uart_end
 );
 
-wire[14:0] full_number=14'd6416;
-//wire[14:0] full_number=14'd;
+wire[14:0] full_number=14'h22a0;
+//wire[14:0] full_number=32;
+
 
 wire[7:0] uart_rx_data;
 
@@ -56,7 +57,6 @@ always @(posedge sys_clk or negedge sys_rst_n)begin
 	    if(w_ram_from_uart_start==1&&state==0&&w_ram_from_uart_end==0)begin
 			if(pos_uart_rx_done) begin
 				data<=uart_rx_data;
-				//data<=data+5;
 				wea<=1;
 				state<=1;
 			end

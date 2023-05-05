@@ -49,6 +49,7 @@ always @(posedge sys_clk or negedge sys_rst_n)begin
 	end
 	else if(state==0 && pos_uart_en_txd && send_ok==0)begin
 		uart_data_reg<=uart_data;
+		//uart_data_reg<=8'h45;
 		tx_flag<=1'b1;
 		send_ok<=0;
 		state<=1;

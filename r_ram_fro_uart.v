@@ -11,11 +11,10 @@ module r_ram_from_uart
 	output reg ur_ram_end
 );
 
-wire[14:0] full_number=2704;
+wire[14:0] full_number=32;
 reg uart_tx_do;
 reg[14:0] counter;
 reg[4:0] state;
-wire send_ok;
 
 assign address=counter;
 

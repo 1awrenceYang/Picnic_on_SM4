@@ -1,44 +1,69 @@
+module tb();
+    reg clk;
+    reg reset;
+    //input root_seed,
+    //input salt
+    reg sign_start;
 
-`timescale 1ns / 1ps
-module testbench;
-localparam
-    CLK_FREQ    = 50_000_000,
-    BAUD_RATE   = 115200,
-    WORD_LENGTH = 8,
-    STOP_BITS   = 2,
-    PARITY      = "NONE";
-reg clk, rst_n;
-reg rx;
-wire tx;
+    wire tapes;
+     
+     wire [255:0]Ch;
+     wire [255:0]Cv;
+     wire sign_end;
+     
+initial
+begin
+clk = 1'b0; 
+reset = 1'b0; 
 
- top_uart_led aa
-(
-				clk		,
-				rst_n	,
-				rx	,
-				tx	
-);
+#100 reset = 1'b1; 
+sign_start = 1'b1;
 
+//data_i =1088'h0;
+//#1000 wait(!sha3_busy) 
+//h1InSeedSet[0:1087] =1088'h61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161;
+//h1InSeedSet[1088:1088*2-1]=0;
+//h1InSeedSet[1088+1024]=1;
+//h1InSeedSet[1088+59]=1;
+//h1InSeedSet[1088+60]=1;
+//h1InSeedSet[1088+61]=1;
+//h1InSeedSet[1088+62]=1;
+//h1InSeedSet[1088+63]=1;
+wait(sign_end) sign_start =0; #3000 sign_start =1'b1;
 
-integer bitTime, idx, idxWord, idxBit;
-reg [7:0] word [0:2];
-initial begin
-    clk = 0; rst_n = 0; rx = 1'b1; #10000; rst_n = 1; #10000;
-    bitTime = 8680;  // 根据波特率设置位时间周期
-    word[0] = 8'hfa; word[1] = 8'hff; word[2] = 8'ha5;
-    for (idx=0; idx<10; idx=idx+1) begin  // 传输次数
-        for (idxWord=0; idxWord<1000000000; idxWord=idxWord+1) begin  // 传输字节
-            rx = 1'b0; #bitTime; //start
-            for (idxBit=0; idxBit<8; idxBit=idxBit+1) begin  // 传输位
-                rx = word[0][idxBit];
-                #bitTime;
-            end
-            rx = 1'b1; #bitTime; //stop
-        end
-        #1000000;
-    end
+wait(sign_end) sign_start =0;
+
 end
-always begin
-    #10 clk = ~clk;
-end
+
+
+verify_res1 vv(
+     clk,
+     reset,
+     8'h1,
+    256'h0-1,
+   // 256'h10943403a30f1c647944319670976830d926a7bd2613e17a2651041962654156,
+    256'h0-1,
+    
+    512'h0-1,
+    1024'h0-1,
+    128'h0-1,
+    //Z
+    9680'h0-1,
+    512'h0-1,
+    2048'h0-1,
+    1024'h0-1,
+    2048'h0-1,
+    4096'h0-1,
+
+    51200'h0,
+    128'h0,
+    sign_start,
+        Ch,
+     Cv,
+    sign_end
+    );
+    
+always #20 clk = ~clk; 
+
+
 endmodule

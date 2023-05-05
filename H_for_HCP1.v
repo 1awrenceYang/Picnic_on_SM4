@@ -27,14 +27,16 @@ module H_for_HCP1(
     reg wea;      
     wire [7:0] addra=r_ok==0?index:counter;  
     reg [511:0] dina;    
+
     always @ (*) begin
         if(~reset) begin
             dina <= 512'h0;
         end
         else begin
-        dina = hashin2[index];
+            dina = hashin2[index];
         end
     end
+
 
     always @(posedge clk or negedge reset) begin
         if(~reset) begin
@@ -56,7 +58,7 @@ module H_for_HCP1(
                 iv<=256'h7380166f4914b2b9172442d7da8a0600a96f30bc163138aae38dee4db0fb0e4e;
             end
             if(state==0&& Hstart&&en_end==0) begin
-                if(index == 5) begin
+                if(index == 102) begin
                     wea<=0;
                     r_ok<=1;
                     state<=1;
@@ -70,7 +72,7 @@ module H_for_HCP1(
             else if(state==1)begin
                 state<=2;
             end
-            else if(state==2)begin
+             else if(state==2)begin
                 state<=3;
             end
             else if(state==3)begin
@@ -91,7 +93,7 @@ module H_for_HCP1(
                     //hashin2<=hashin2<<512;
                     cf_start<=0;
                     iv<=hashValue;
-                    if(counter==101) begin
+                    if(counter==102) begin
                         state<=7;
                     end
                     else begin

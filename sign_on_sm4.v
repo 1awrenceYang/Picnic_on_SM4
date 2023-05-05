@@ -24,11 +24,9 @@ module sign_on_sm4_res1(
         input clk,
         input rst,
         input signature_start,
-        input [51199:0] M,
-        input [127:0] pk,
         
         output signature_stop,
-        output [21632-1:0] sigma_out
+        output [15:0] sigma_out
     );
     
     
@@ -93,8 +91,8 @@ module sign_on_sm4_res1(
     reg Csn_start;
     reg C_star_start;
     reg [255:0] C_star;
-   // reg [127:0] pk;
-  //  reg [51199:0] M;
+    reg [127:0] pk;
+    reg [51199:0] M;
     reg HCP_begin;
     reg [255:0] HCP_result;
     reg [19:0] LP;
@@ -149,7 +147,7 @@ module sign_on_sm4_res1(
     wire HCP_end;
     wire [127:0] masked_key;
     
-    wire [21632-1:0] sigma;
+    wire [19708-1:00] sigma;
     wire get_sign_stop;
 
     
@@ -165,7 +163,7 @@ module sign_on_sm4_res1(
     //assign LP_output=LP;
     //assign HCP_start_out=HCP_begin;
     
-    assign sigma_out=sigma;
+    assign sigma_out=sigma[31:16];
     
     seed_tree_for_seed_star Compute_SeedStar(clk, rst, root_seed, salt, 8'b00000001, step3_start, seed_star_wire, step3_stop);
     seed_tree_for_inseeds Compute_inseeds(clk, rst, seed_delta, salt, 8'b00000001, step4_start, instseeds_wire, step4_stop);
@@ -243,8 +241,8 @@ always@(posedge clk or negedge rst)//main control logic
             begin
                 true_aux_delta<=8192'b0;
                 get_sign_start<=1'b0;
-           //     M<=51200'b0;
-           //     pk<=128'h681edf34d206965e86b3e94f536e4246;
+                M<=51200'b0;
+                pk<=128'h681edf34d206965e86b3e94f536e4246;
                 HCP_result<=256'b0;
                 LP<=20'b0;
                 LC<=20'b0;
