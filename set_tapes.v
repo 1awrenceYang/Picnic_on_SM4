@@ -3,17 +3,16 @@
 module set_tapes(
     input clk,
     input reset,
-    input[128:0] seed,
+    input[4095:0] seed,
     input[255:0] salt,
-    input[7:0] t,
-    input[7:0] j,
+    input[15:0] t,
     input set_tapes_start,
-    output [4223:0] tapes,
+    output [16*2295-1:0] tapes,
     output reg set_tapes_end 
 );
-    reg  Hstart;
-    reg  restart;
-    wire  en_end;
+    reg [15:0] Hstart;
+    reg [15:0] restart;
+    wire [15:0] en_end;
     reg[4:0] state; 
 
     always @(posedge clk or negedge reset) begin
@@ -22,20 +21,17 @@ module set_tapes(
             set_tapes_end<=0;
         end
         else begin
-            if(~set_tapes_start) begin
-                set_tapes_end<=0;
-            end
             if(state==0) begin
-                if(set_tapes_start &&set_tapes_end==0) begin
+                if(set_tapes_start) begin
                     set_tapes_end<=0;
-                    Hstart<=1;
+                    Hstart<=16'hffff;
                     restart<=0;
                     state<=1;
                 end
                 
             end
             if(state==1) begin
-                if(en_end) begin
+                if(en_end==16'hffff) begin
                     restart<=Hstart;
                     Hstart<=0;
                     state<=2;
@@ -43,7 +39,7 @@ module set_tapes(
             end
             if(state==2) begin
                 set_tapes_end<=1;
-                state <= 0;
+                state <= 3;
             end
             if(state==3) begin
                 set_tapes_end <= 0;
@@ -53,46 +49,53 @@ module set_tapes(
 
     end
 
-    KDF_for_tapes kdf0(clk,reset,Hstart,restart,seed,salt,t,16'h0,tapes,en_end);
+    KDF kdf0(clk,reset,Hstart[0],restart[0],seed[255:0],salt,t,16'h0,tapes[2294:0],en_end[0]);
+    KDF kdf1(clk,reset,Hstart[1],restart[1],seed[511:256],salt,t,16'h1,tapes[4589:2295],en_end[1]);
+    KDF kdf2(clk,reset,Hstart[2],restart[2],seed[767:512],salt,t,16'h2,tapes[6884:4590],en_end[2]);
+    KDF kdf3(clk,reset,Hstart[3],restart[3],seed[1023:768],salt,t,16'h3,tapes[9179:6885],en_end[3]);
+    KDF kdf4(clk,reset,Hstart[4],restart[4],seed[1279:1024],salt,t,16'h4,tapes[11474:9180],en_end[4]);
+    KDF kdf5(clk,reset,Hstart[5],restart[5],seed[1535:1280],salt,t,16'h5,tapes[13769:11475],en_end[5]);
+    KDF kdf6(clk,reset,Hstart[6],restart[6],seed[1791:1536],salt,t,16'h6,tapes[16064:13770],en_end[6]);
+    KDF kdf7(clk,reset,Hstart[7],restart[7],seed[2047:1792],salt,t,16'h7,tapes[18359:16065],en_end[7]);
+    KDF kdf8(clk,reset,Hstart[8],restart[8],seed[2303:2048],salt,t,16'h8,tapes[20654:18360],en_end[8]);
+    KDF kdf9(clk,reset,Hstart[9],restart[9],seed[2559:2304],salt,t,16'h9,tapes[22949:20655],en_end[9]);
+    KDF kdf10(clk,reset,Hstart[10],restart[10],seed[2815:2560],salt,t,16'ha,tapes[25244:22950],en_end[10]);
+    KDF kdf11(clk,reset,Hstart[11],restart[11],seed[3071:2816],salt,t,16'hb,tapes[27539:25245],en_end[11]);
+    KDF kdf12(clk,reset,Hstart[12],restart[12],seed[3327:3072],salt,t,16'hc,tapes[29834:27540],en_end[12]);
+    KDF kdf13(clk,reset,Hstart[13],restart[13],seed[3583:3328],salt,t,16'hd,tapes[32129:29835],en_end[13]);
+    KDF kdf14(clk,reset,Hstart[14],restart[14],seed[3839:3584],salt,t,16'he,tapes[34424:32130],en_end[14]);
+    KDF kdf15(clk,reset,Hstart[15],restart[15],seed[4095:3840],salt,t,16'hf,tapes[36719:34425],en_end[15]);
 endmodule
 
-module KDF_for_tapes(
+module KDF(
     input clk,
     input reset,
     input Hstart,
     input restart,
-    input[127:0] seed,
+    input[255:0] seed,
     input[255:0] salt,
-    input [7:0] t,
-    input [7:0] i,
-    output wire [4223:0] tapes,
+    input [15:0] t,
+    input [15:0] i,
+    output reg [2295-1:0] tapes,
     output reg en_end
     );
     reg[0:1] state;
     reg out_start;
+    reg [2295-1:0] tapes2;
     reg start;
     wire sha3_busy;
     reg[0:9] counter;
     reg[1087:0] data;
-
+    wire[0:20] index=2295-1-(counter)*1088;
+    wire[0:20] index_i=3263-(counter)*1088;
     
     wire out_ok;
-    wire[0:9] groupNum=4;
-    wire[4351:0] h_in={seed,salt,t,i,8'h1f,672'h0,8'h80,2176'h0,1088'h0};
+    wire[0:9] groupNum=3;
+    wire[3263:0] h_in={seed,salt,t,i,8'h1f,528'h0,8'h80,2176'h0};
     wire[1087:0] hashValue;
-    
-    wire[1087:0] H_in [3:0];
-    assign {H_in[0],H_in[1],H_in[2],H_in[3]}=h_in;
-    
-    reg[1087:0] tapes_list[3:0];
-
-    assign tapes[4223:960]= {tapes_list[0],tapes_list[1],tapes_list[2]};
-    assign tapes[959:0]= tapes_list[3][1088:128];
-
     always @(*)begin
-        data = H_in[counter];
+        data = h_in[index_i-: 1088];
     end
-
     always @(posedge clk or negedge reset) begin
         if(~reset) begin
             counter <= 0;
@@ -100,7 +103,7 @@ module KDF_for_tapes(
             out_start<=0;
             en_end<=0;
             state <= 0;
-            {tapes_list[0],tapes_list[1],tapes_list[2],tapes_list[0]}=4352'h0;
+            tapes<=0;
         end
         else begin
             if(state==0 && Hstart)begin
@@ -116,14 +119,16 @@ module KDF_for_tapes(
             else if(state == 1 && en_end==0) begin
                 if(sha3_busy==1)begin
                     counter<=counter+1;
-                    if (counter==3) begin
-                        tapes_list[counter] <= hashValue;
+                    if (counter==2) begin
+                        tapes2[118:0] <= hashValue[1087-:119];
+                    //    tapes<=tapes2;
                     end
                     else begin
-                        tapes_list[counter] <= hashValue;
+                        tapes2[index-:1088] <= hashValue;
                     end
                 end
                 if(counter==groupNum) begin
+                    tapes<=tapes2;
                     start<=0;
                     state <=2 ;
                 end
