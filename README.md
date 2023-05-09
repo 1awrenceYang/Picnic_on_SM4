@@ -10,5 +10,6 @@ For more information, please visit: https://postquantumsignature.github.io/
 
 We are currently junior college students of XX(Removed due to the contest's request) University of China, we are now attending the The 16th National Information Security Contest as a team. The team members are: (Removed due to the contest's request). The team is named:(Removed due to the contest's request) :
 
-# 
+# Execution Result
+The execution result of both signature generation and verification are in the file: execution result.rar
 
