@@ -77,6 +77,10 @@ module KDF_for_seed_lambda(
     wire[1087:0] d_out;
   
     always @(*) begin
+    if(~reset) begin
+        seed_lambda<=0;
+    end
+    else begin
     case (counter)
       7:  seed_lambda[8191:7616] = hashValue;
       6:  seed_lambda[7615:6528] = hashValue;
@@ -87,6 +91,7 @@ module KDF_for_seed_lambda(
       1:  seed_lambda[2175:1088] = hashValue;
       0:  seed_lambda[1087:0] = hashValue;
       endcase
+    end
     end
     
     always @(*)begin
@@ -103,7 +108,7 @@ module KDF_for_seed_lambda(
             out_start<=0;
             en_end<=0;
             state <= 0;
-            seed_lambda<=0;
+        //    seed_lambda<=0;
         end
         else begin
             if(~Hstart) begin

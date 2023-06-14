@@ -10,15 +10,15 @@ module get_sign(
     input [128*8-1:0] seed_star_i,
     input [256*8-1:0] Cv_i,
     input [128*15*8-1:0] seed_i,
-    input [512*8-1:0] aux_i, //这个你给512就行 //这个不给也行，空�?，因为是�?后一个用户的
+    input [512*8-1:0] aux_i, //这个你给512就行 //这个不给也行，空�??，因为是�??后一个用户的
     input [128*8-1:0] masked_key_i,  
-    input [512*8-1:0] msgs_i, //同样512就行，给�?后一个用户的mag 
-    input [256*8-1:0] C_i, //都给�?后一�?
+    input [512*8-1:0] msgs_i, //同样512就行，给�??后一个用户的mag 
+    input [256*8-1:0] C_i, //都给�??后一�??
     input [512*8-1:0] seed_lambda_i,
     input [1024*8-1:0] aux_triangle_i,
     input [127:0] seed_triangle_i,
 
-    output [19708-1:0] sigma,
+    output [19583:0] sigma,
     output reg get_sign_end
 );
 
@@ -74,7 +74,7 @@ module get_sign(
 
     reg [127:0] iSeedInfo_list[3:0];
     reg [255:0] cvInfo_list[3:0];
-    reg [4863:0] Z[3:0];
+    reg [4351:0] Z[3:0];
     
     reg [4:0] state;
 

@@ -7,8 +7,10 @@ module uart_tx(
     output reg      send_ok
 );
  
-parameter 	SYS_CLK_FRE=100_000_000;     
-parameter 	BPS=115200;               
+parameter	BPS=115200;
+//parameter	BPS=3000000;					
+parameter	SYS_CLK_FRE=100_000_000;
+//parameter	SYS_CLK_FRE=500_000_000;             
 localparam	BPS_CNT=SYS_CLK_FRE/BPS;  
  
 reg	uart_tx_en_d0;			
@@ -49,7 +51,6 @@ always @(posedge sys_clk or negedge sys_rst_n)begin
 	end
 	else if(state==0 && pos_uart_en_txd && send_ok==0)begin
 		uart_data_reg<=uart_data;
-		//uart_data_reg<=8'h45;
 		tx_flag<=1'b1;
 		send_ok<=0;
 		state<=1;

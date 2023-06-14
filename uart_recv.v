@@ -6,8 +6,10 @@ module uart_rx(
 	output reg [7:0]uart_rx_data		
 );
 
-parameter	BPS=115200;					
-parameter	SYS_CLK_FRE=100_000_000;		
+parameter	BPS=115200;
+//parameter	BPS=3000000;					
+parameter	SYS_CLK_FRE=100_000_000;
+//parameter	SYS_CLK_FRE=500_000_000;			
 localparam	BPS_CNT=SYS_CLK_FRE/BPS;	
  
 reg 			uart_rx_d0;		

@@ -10,7 +10,7 @@ module w_ram_from_uart
 	output reg w_ram_from_uart_end
 );
 
-wire[14:0] full_number=14'h22a0;
+wire[14:0] full_number=14'd6432;
 //wire[14:0] full_number=32;
 
 
