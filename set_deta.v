@@ -66,7 +66,7 @@ module KDF_for_seed_deta(
     
     wire out_ok;
     wire[0:9] groupNum=8;
-    wire[1088:0] h_in={instseeds,8'h1f,944'h0,8'h80};
+    wire[1087:0] h_in={instseeds,8'h1f,944'h0,8'h80};
     wire[1087:0] hashValue;
     wire[1087:0] d_out;
     

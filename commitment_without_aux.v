@@ -11,8 +11,8 @@ module commitment_without_aux(
 );
     reg [255:0] c[14:0];
     assign C = {c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8],c[9],c[10],c[11],c[12],c[13],c[14]};
-    wire [127:0] seed_list[14:0];
-    assign {seed_list[0],seed_list[1],seed_list[2],seed_list[3],seed_list[4],seed_list[5],seed_list[6],seed_list[7],seed_list[8],seed_list[9],seed_list[10],seed_list[11],seed_list[12],seed_list[13],seed_list[14],seed_list[15]}=seed;
+    wire [127:0] seed_list[15:0];
+    assign {seed_list[0],seed_list[1],seed_list[2],seed_list[3],seed_list[4],seed_list[5],seed_list[6],seed_list[7],seed_list[8],seed_list[9],seed_list[10],seed_list[11],seed_list[12],seed_list[13],seed_list[14]}=seed;
     
     reg [7:0] i;
     wire [127:0] seed_in=seed_list[i];

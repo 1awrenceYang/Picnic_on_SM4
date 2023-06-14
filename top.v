@@ -10,7 +10,7 @@ module top(
 	output  wire            a3,
 	output  wire            a4
 );
-//wire sys_clk;
+wire sys_clk;
 wire sys_rst_n=~sys_rst_n2;
 
 //wire sys_rst_n=sys_rst_n2; 

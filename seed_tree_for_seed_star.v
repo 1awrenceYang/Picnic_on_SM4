@@ -1,4 +1,5 @@
 
+
 module seed_tree_for_seed_star(
     input clk,
     input reset,
@@ -12,16 +13,17 @@ module seed_tree_for_seed_star(
     reg [511:0] h1InSeedSet0;
     wire [511:0] h1InSeedSet [3:0];
     reg[7:0] j;
+    reg[7:0] j2;
     wire [103:0]padding={8'h80,32'h0,64'h198};
-    reg [3:0] Hstart;
+    reg [7:0] Hstart;
     wire [255:0] hashValue[3:0];
     wire [3:0] en_end; 
     reg[4:0] state; 
     reg[4:0] counter;
-    wire [0:3] start_marsk[0:2];
+    wire [0:3] start_marsk[0:3];
     assign start_marsk[0] = 1; 
-    assign start_marsk[1] = 8'h3; 
-    assign start_marsk[2] = 8'hf;  
+    assign start_marsk[1] = 4'h3; 
+    assign start_marsk[2] = 4'hf;  
     
     assign seed_star[1023:768] = hashValue[0];
     assign seed_star[767:512] = hashValue[1];
@@ -39,15 +41,14 @@ module seed_tree_for_seed_star(
             state<=0;
             tree_set_end<=0;
             j<=1;
+            j2<=1;
         end
         else begin
-            if(~tree_start) begin
-                tree_set_end<=0;
-            end
             if(state==0) begin
-                if(tree_start && tree_set_end==0) begin
+                if(tree_start) begin
                     if(counter==0)begin
                         j<=1;
+                        j2<=1;
                         h1InSeedSet0<={8'h01,root_seed,salt,t,8'h0,padding};
                     end
                     tree_set_end<=0;
@@ -61,7 +62,8 @@ module seed_tree_for_seed_star(
                 if(en_end==start_marsk[counter]) begin
                         counter<=counter+1;
                         Hstart<=0;
-                        j<=j<<1;
+                        j<=j2;
+                        j2<=j2<<1;
                         h1InSeedSet0<={8'h01,hashValue[0][255:128],salt,t,j+0,padding};
                         if(en_end == start_marsk[2]) begin
                             state<=2;
@@ -75,7 +77,11 @@ module seed_tree_for_seed_star(
         end
             if(state==2) begin
                 tree_set_end<=1;
-                state <= 0;
+                state <= 3;
+            end
+            if(state==3) begin
+                tree_set_end <= 0;
+                state<=0;
                 counter <= 0;
             end
         end

@@ -7,7 +7,7 @@ module r_ram_for_sign
 
 
 	output[14:0] address,
-    output [21632-1:0] sigma_out,
+    output [19584-1:0] sigma_out,
 	output reg  r_ram_for_sign_end
 );
 
@@ -19,6 +19,9 @@ wire [51199:0]M={M_list[0],M_list[1],M_list[2],M_list[3],M_list[4],M_list[5],M_l
 //pk 15
 reg [7:0]pk_list[15:0];
 wire [127:0]pk={pk_list[0],pk_list[1],pk_list[2],pk_list[3],pk_list[4],pk_list[5],pk_list[6],pk_list[7],pk_list[8],pk_list[9],pk_list[10],pk_list[11],pk_list[12],pk_list[13],pk_list[14],pk_list[15]};
+
+reg [7:0]sk_list[15:0];
+wire [127:0]sk={sk_list[0],sk_list[1],sk_list[2],sk_list[3],sk_list[4],sk_list[5],sk_list[6],sk_list[7],sk_list[8],sk_list[9],sk_list[10],sk_list[11],sk_list[12],sk_list[13],sk_list[14],sk_list[15]};
 
 
 /*
@@ -74,12 +77,13 @@ wire [7:0]pk_list[15:0]
 
 reg [14:0] counter1;  
 reg [14:0] counter2;
+reg counter3;
 reg [5:0] state;
 
 assign address=counter1;
 
 reg signature_start;
-reg counter3;
+
 wire signature_stop;
 
 always @(posedge clk or negedge reset) begin
@@ -87,8 +91,8 @@ always @(posedge clk or negedge reset) begin
         r_ram_for_sign_end<=0;
         counter1<=0;
         counter2<=0;
-        state<=0;
         counter3<=0;
+        state<=0;
         signature_start<=0;
     end
     else begin
@@ -96,19 +100,17 @@ always @(posedge clk or negedge reset) begin
             r_ram_for_sign_end<=0;
             counter1<=0;
             counter2<=0;
-            counter3<=0;
             state<=0;
         end
         if(state==0&& r_ram_for_sign_start&&r_ram_for_sign_end==0) begin
             state<=1;
         end
         else if(state==1) begin
-            if(~counter3) begin
-                counter3<=~counter3;
+            if(~counter3) begin             
                 counter1<=counter1+1;
-                
+                counter3<=~counter3;
             end
-            else begin
+            else begin 
                 counter3<=~counter3;
                 if (counter2==6399) begin
                     counter2<=0;
@@ -121,11 +123,11 @@ always @(posedge clk or negedge reset) begin
             end
         end
         else if(state==2) begin
-            if(~counter3) begin
+            if(~counter3) begin             
+                counter1<=counter1+1;
                 counter3<=~counter3;
-                counter1<=counter1+1;   
             end
-            else begin
+            else begin 
                 counter3<=~counter3;
                 if (counter2==15) begin
                     counter2<=0;
@@ -138,15 +140,35 @@ always @(posedge clk or negedge reset) begin
             end
         end
         else if(state==3) begin
+            if(~counter3) begin             
+                counter1<=counter1+1;
+                counter3<=~counter3;
+            end
+            else begin 
+                counter3<=~counter3;
+                if (counter2==15) begin
+                    counter2<=0;
+                    state<=4;
+                end
+                else begin
+                    counter2<=counter2+1;
+                end
+                sk_list[counter2]<=data;
+            end
+        end
+        else if(state==4) begin
+            
             if(signature_stop==1) begin
                 signature_start<=0;
-                  state<=4;
+                  state<=5;
             end
             else begin
                 signature_start<=1;
             end
+            
+            //state<=5;
         end
-        else if(state==4) begin
+        else if(state==5) begin
             counter1<=0;
             state<=0;
             r_ram_for_sign_end<=1;
@@ -168,14 +190,18 @@ end
 // M 6399
 //pk 15
 */
+//assign sigma_out=M[19583:0];
+
 sign_on_sm4_res1 sign(
     clk,
     reset,
     signature_start,
-    {1'h1,51199'h12312312312312312377834129847192347},
-    {1'h1,127'h1},
+    M,
+    sk,
+    pk,
     signature_stop,
     sigma_out
 );
+
 
 endmodule 

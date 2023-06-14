@@ -18,7 +18,7 @@ module get_sign(
     input [1024*8-1:0] aux_triangle_i,
     input [127:0] seed_triangle_i,
 
-    output [19708-1:0] sigma,
+    output [6271:0] sigma,
     output reg get_sign_end
 );
 

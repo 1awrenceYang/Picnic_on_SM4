@@ -134,8 +134,7 @@ module verify_res1(
 
     
     always @(posedge clk or negedge reset) begin
-        if(~reset) 
-        begin
+        if(~reset) begin
             verify_res1_end<=0;
             state<=0;
             HCP_for_verify_start<=0;
@@ -153,8 +152,7 @@ module verify_res1(
             HCP_start<=0;
         end
         else begin
-            if(~verify_res1_start) 
-            begin
+            if(~verify_res1_start) begin
                 verify_successful<=0;
                 verify_res1_end<=0;
             end
@@ -189,9 +187,9 @@ module verify_res1(
                         round_fun1_start<=0;
                         if(add_flag) begin
                             counter2<=counter2+1;
-                            Cv_list2[the_index]<=Cv_list[counter2];
-                            Cn_list[the_index]<=Cn;
-                            Ch_list[the_index]<=Ch;
+                            Cv_list2[j]<=Cv_list[counter2];
+                            Cn_list[j]<=Cn;
+                            Ch_list[j]<=Ch;
                         end
                         else begin
                             counter3<=counter3+1;
