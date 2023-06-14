@@ -38,8 +38,8 @@ module HCP(
    
     always @(posedge clk or negedge reset) begin
         if(~reset) begin
-            {LC[0],LC[1],LC[2],LC[3]}<=20'h0;
-            {LP[0],LP[1],LP[2],LP[3]}<=20'h0;
+            {LC[0],LC[1],LC[2],LC[3]}=20'h0;
+            {LP[0],LP[1],LP[2],LP[3]}=20'h0;
             Hstart<=0;
             Hstart2<=0;
             HCP_end<=0;
@@ -53,8 +53,8 @@ module HCP(
         end
         else begin
             if(~HCP_start) begin
-                {LC[0],LC[1],LC[2],LC[3]}<=20'h0;
-                {LP[0],LP[1],LP[2],LP[3]}<=20'h0;
+                {LC[0],LC[1],LC[2],LC[3]}=20'h0;
+                {LP[0],LP[1],LP[2],LP[3]}=20'h0;
                 HCP_end<=0;
             end
             else if(state==0 && HCP_start&&HCP_end==0)begin
@@ -146,6 +146,7 @@ module HCP(
     end
 
     H_for_HCP1 H1(clk,reset,C_star,salt,pk,M,Hstart,hashValue,en_end);
+  //  H_for_HCP1 H1(clk,reset,256'h0,salt,pk,M,Hstart,hashValue,en_end);
     H_for_HCP2 H2(clk,reset,h,Hstart2,hashValue2,en_end2);
 
 endmodule

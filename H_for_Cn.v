@@ -15,7 +15,7 @@ module H_for_Cn(
     reg [3:0]counter;
 
     wire [2047:0]hashin={seed,aux_triangle,salt,8'h80,184'h0,64'd1792};
-    wire [511:0]hashin2[73:0];
+    wire [511:0]hashin2[3:0];
     assign{hashin2[0],hashin2[1],hashin2[2],hashin2[3]}=hashin;
 
     wire [511:0] h_in=hashin2[counter];
