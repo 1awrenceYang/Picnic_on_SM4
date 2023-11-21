@@ -10,8 +10,7 @@ For more information, please visit: https://postquantumsignature.github.io/
 
 We are currently junior college students of XX(Removed due to the contest's request) University of China, we are now attending the The 16th National Information Security Contest as a team. The team members are: (Removed due to the contest's request). The team is named:(Removed due to the contest's request) :
 
-# Execution Result
-The execution result of both signature generation and verification are in the file: execution result.rar, the demostration video of firmware update verification is too large to be uploaded on github, thus we put it on the BaiDu cloud drive: https://pan.baidu.com/s/1wDAK1gjAhjTe7frAFpOlDA, password: 1234
+
 
 
 
